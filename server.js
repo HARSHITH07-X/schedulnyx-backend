@@ -6,16 +6,36 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 dotenv.config();
 
 const app = express();
-app.use(cors());
+
+/* -------------------- MIDDLEWARE -------------------- */
+app.use(cors({
+  origin: "*", // You can restrict later to your Netlify domain
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type"]
+}));
+
 app.use(express.json());
+
+/* -------------------- GEMINI SETUP -------------------- */
+if (!process.env.GEMINI_API_KEY) {
+  console.error("GEMINI_API_KEY is missing in environment variables");
+  process.exit(1);
+}
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
+/* -------------------- ROUTES -------------------- */
+app.get("/", (req, res) => {
+  res.json({ message: "Schedulnyx Backend Live 🚀" });
+});
+
 app.post("/api/generate", async (req, res) => {
   try {
+    console.log("Incoming body:", req.body);
+
     const { prompt } = req.body;
 
-    if (!prompt) {
+    if (!prompt || typeof prompt !== "string") {
       return res.status(400).json({ error: "Prompt required" });
     }
 
@@ -27,14 +47,17 @@ app.post("/api/generate", async (req, res) => {
     const response = await result.response;
     const text = response.text();
 
-    res.json({ result: text });
+    return res.status(200).json({ result: text });
 
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "AI generation failed" });
+  } catch (error) {
+    console.error("Gemini Error:", error);
+    return res.status(500).json({ error: "AI generation failed" });
   }
 });
 
-app.listen(5000, () => {
-  console.log("Server running on port 5000");
+/* -------------------- START SERVER -------------------- */
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
