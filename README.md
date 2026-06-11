@@ -78,9 +78,10 @@ curl -X POST http://localhost:5000/api/auth/sync -H "x-dev-uid: demo-user"
 curl http://localhost:5000/api/auth/me -H "x-dev-uid: demo-user"
 ```
 
-Once `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, and `FIREBASE_PRIVATE_KEY`
-are set, real Firebase ID tokens are required via `Authorization: Bearer <token>`
-and the dev header is ignored.
+Once Firebase is configured — either `FIREBASE_SERVICE_ACCOUNT` (full
+service-account JSON) or the individual `FIREBASE_PROJECT_ID` /
+`FIREBASE_CLIENT_EMAIL` / `FIREBASE_PRIVATE_KEY` fields — real Firebase ID tokens
+are required via `Authorization: Bearer <token>` and the dev header is ignored.
 
 ## API (Phase 1)
 

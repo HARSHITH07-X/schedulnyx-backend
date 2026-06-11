@@ -16,8 +16,11 @@ export const env = {
     process.env.DATABASE_URL ||
     "postgres://schedulnyx:schedulnyx_dev@localhost:5432/schedulnyx",
 
-  // Firebase Admin (service account)
+  // Firebase Admin (service account).
+  // Either provide the full service-account JSON via FIREBASE_SERVICE_ACCOUNT,
+  // or the three individual fields below.
   firebase: {
+    serviceAccountJson: process.env.FIREBASE_SERVICE_ACCOUNT || "",
     projectId: process.env.FIREBASE_PROJECT_ID || "",
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL || "",
     // Support newline-escaped private keys from .env files.
@@ -43,8 +46,12 @@ export const isTest = env.nodeEnv === "test";
 export const devAuthEnabled =
   !isProduction && process.env.DEV_AUTH !== "false";
 
-export const firebaseConfigured = Boolean(
-  env.firebase.projectId && env.firebase.clientEmail && env.firebase.privateKey,
-);
+export const firebaseConfigured =
+  Boolean(env.firebase.serviceAccountJson) ||
+  Boolean(
+    env.firebase.projectId &&
+      env.firebase.clientEmail &&
+      env.firebase.privateKey,
+  );
 
 export const geminiConfigured = Boolean(env.geminiApiKey);
