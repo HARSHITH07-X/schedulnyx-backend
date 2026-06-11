@@ -29,7 +29,7 @@ export const env = {
 
   // Gemini
   geminiApiKey: process.env.GEMINI_API_KEY || "",
-  geminiModel: process.env.GEMINI_MODEL || "gemini-1.5-flash",
+  geminiModel: process.env.GEMINI_MODEL || "gemini-2.0-flash",
 
   // CORS
   corsOrigin: process.env.CORS_ORIGIN || "*",
