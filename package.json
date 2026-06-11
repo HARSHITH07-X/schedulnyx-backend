@@ -2,17 +2,32 @@
   "name": "schedulnyx-backend",
   "version": "1.0.0",
   "type": "module",
-  "main": "server.js",
+  "main": "src/server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "migrate": "node src/db/migrate.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "node --test"
   },
   "dependencies": {
     "@google/generative-ai": "^0.11.5",
     "cors": "^2.8.6",
     "dotenv": "^16.6.1",
-    "express": "^4.22.1"
+    "express": "^4.22.1",
+    "express-rate-limit": "^7.4.1",
+    "firebase-admin": "^12.7.0",
+    "helmet": "^8.0.0",
+    "pg": "^8.13.1",
+    "zod": "^3.23.8"
   },
-  "description": "",
+  "devDependencies": {
+    "@eslint/js": "^9.15.0",
+    "eslint": "^9.15.0",
+    "globals": "^15.12.0"
+  },
+  "description": "SchedulnyxAI backend — Node.js + Express + PostgreSQL API.",
   "keywords": [],
   "author": "",
   "license": "ISC"
