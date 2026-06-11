@@ -7,6 +7,28 @@ const toInt = (value, fallback) => {
   return Number.isNaN(parsed) ? fallback : parsed;
 };
 
+// Tracks whether a FIREBASE_SERVICE_ACCOUNT was supplied but failed to parse,
+// so we can warn instead of silently breaking auth.
+export let firebaseServiceAccountInvalid = false;
+
+function parseServiceAccount(raw) {
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed && parsed.private_key && parsed.client_email) {
+      if (typeof parsed.private_key === "string") {
+        parsed.private_key = parsed.private_key.replace(/\\n/g, "\n");
+      }
+      return parsed;
+    }
+    firebaseServiceAccountInvalid = true;
+    return null;
+  } catch {
+    firebaseServiceAccountInvalid = true;
+    return null;
+  }
+}
+
 export const env = {
   nodeEnv: process.env.NODE_ENV || "development",
   port: toInt(process.env.PORT, 5000),
@@ -20,7 +42,7 @@ export const env = {
   // Either provide the full service-account JSON via FIREBASE_SERVICE_ACCOUNT,
   // or the three individual fields below.
   firebase: {
-    serviceAccountJson: process.env.FIREBASE_SERVICE_ACCOUNT || "",
+    serviceAccount: parseServiceAccount(process.env.FIREBASE_SERVICE_ACCOUNT),
     projectId: process.env.FIREBASE_PROJECT_ID || "",
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL || "",
     // Support newline-escaped private keys from .env files.

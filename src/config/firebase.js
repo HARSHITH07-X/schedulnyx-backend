@@ -5,18 +5,9 @@ import { env, firebaseConfigured } from "./env.js";
 let firebaseApp = null;
 
 function resolveCredential() {
-  // Prefer the full service-account JSON when provided.
-  if (env.firebase.serviceAccountJson) {
-    let parsed;
-    try {
-      parsed = JSON.parse(env.firebase.serviceAccountJson);
-    } catch {
-      throw new Error("FIREBASE_SERVICE_ACCOUNT is not valid JSON");
-    }
-    if (typeof parsed.private_key === "string") {
-      parsed.private_key = parsed.private_key.replace(/\\n/g, "\n");
-    }
-    return admin.credential.cert(parsed);
+  // Prefer the full service-account JSON when provided (already parsed/validated).
+  if (env.firebase.serviceAccount) {
+    return admin.credential.cert(env.firebase.serviceAccount);
   }
 
   return admin.credential.cert({

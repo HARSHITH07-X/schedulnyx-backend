@@ -3,6 +3,7 @@ import { pool } from "./config/db.js";
 import {
   env,
   firebaseConfigured,
+  firebaseServiceAccountInvalid,
   geminiConfigured,
 } from "./config/env.js";
 import { runMigrations } from "./db/migrate.js";
@@ -18,6 +19,11 @@ async function start() {
     console.error(err.message);
   }
 
+  if (firebaseServiceAccountInvalid) {
+    console.warn(
+      "FIREBASE_SERVICE_ACCOUNT was provided but is not valid service-account JSON — ignoring it.",
+    );
+  }
   if (!firebaseConfigured) {
     console.warn(
       "Firebase Admin not configured — dev auth (x-dev-uid header) is active.",
